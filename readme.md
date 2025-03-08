@@ -8,3 +8,5 @@
 5. npm run start:dev
 6. npm run start:dev billing
 7. npm run start:dev auth
+
+docker-compose up --build -V

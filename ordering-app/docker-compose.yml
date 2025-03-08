@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  orders:
+    build:
+      context: .
+      dockerfile: ./apps/orders/Dockerfile
+      target: development
+    command: npm run start:dev orders
+    env_file:
+      - ./apps/orders/.env
+    environment:
+      - MONGODB_URI=mongodb://mongo1:27017/?replicaSet=dbrs
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "3000:3000"
+    networks:
+      - mongo-network
+
+  mongo1:
+    container_name: mongo1
+    image: mongo:4.4
+    volumes:
+      - ./scripts/rs-init.sh:/docker-entrypoint-initdb.d/rs-init.sh:ro
+      - ./scripts/init.js:/docker-entrypoint-initdb.d/init.js:ro
+    networks:
+      - mongo-network
+    ports:
+      - "27017:27017"
+    restart: always
+    command: ["mongod", "--replSet", "dbrs", "--bind_ip_all"]
+
+  mongo2:
+    container_name: mongo2
+    image: mongo:4.4
+    networks:
+      - mongo-network
+    ports:
+      - "27018:27017"
+    restart: always
+    command: ["mongod", "--replSet", "dbrs", "--bind_ip_all"]
+
+  mongo3:
+    container_name: mongo3
+    image: mongo:4.4
+    networks:
+      - mongo-network
+    ports:
+      - "27019:27017"
+    restart: always
+    command: ["mongod", "--replSet", "dbrs", "--bind_ip_all"]
+
+networks:
+  mongo-network:
+    driver: bridge
