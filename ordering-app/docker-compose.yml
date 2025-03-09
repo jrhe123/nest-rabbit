@@ -39,6 +39,26 @@ services:
     networks:
       - mongo-network
 
+  auth:
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+      target: development
+    command: npm run start:dev auth
+    env_file:
+      - ./apps/auth/.env
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "3001:3001"
+    networks:
+      - mongo-network
+
   rabbitmq:
     image: rabbitmq
     ports:
