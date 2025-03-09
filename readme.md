@@ -10,3 +10,5 @@
 7. npm run start:dev auth
 
 docker-compose up --build -V
+
+ref: https://www.youtube.com/watch?v=yuVVKB0EaOQ&t=1060s
