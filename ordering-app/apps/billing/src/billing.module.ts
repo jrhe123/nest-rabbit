@@ -1,8 +1,7 @@
-import { ValidationSchema } from './../../../node_modules/class-validator/types/validation-schema/ValidationSchema.d';
 import { Module } from '@nestjs/common';
 import { BillingController } from './billing.controller';
 import { BillingService } from './billing.service';
-import { RMQModule } from '@app/common';
+import { AuthModule, RMQModule } from '@app/common';
 import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
 
@@ -16,6 +15,7 @@ import Joi from 'joi';
       }),
     }),
     RMQModule,
+    AuthModule,
   ],
   controllers: [BillingController],
   providers: [BillingService],

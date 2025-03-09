@@ -11,7 +11,7 @@ export class OrdersService {
     private readonly ordersRepository: OrdersRepository,
     @Inject(BILLING_SERVICE) private billingClient: ClientProxy,
   ) {}
-  async createOrder(request: CreateOrderRequest) {
+  async createOrder(request: CreateOrderRequest, authentication: string) {
     const session = await this.ordersRepository.startTransaction();
     try {
       const order = this.ordersRepository.create(request, { session });
@@ -20,6 +20,7 @@ export class OrdersService {
       await lastValueFrom(
         this.billingClient.emit('order_created', {
           request,
+          Authentication: authentication, // we will do jwt auth guard in the event handler
         }),
       );
       await session.commitTransaction();
